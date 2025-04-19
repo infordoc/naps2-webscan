@@ -22,7 +22,7 @@ const getSettingPaperSize = (paperType: string) => {
     "pwg:Width": 2481,
     "pwg:XOffset": 0,
     "pwg:YOffset": 0,
-    "_pwg:MustHonor": true
+    // "_pwg:MustHonor": true
   }
   for (let i = 0; i < PAPPER_PAGE_SIZE.length; i++) {
     if (PAPPER_PAGE_SIZE[i].label === paperType) {
@@ -30,7 +30,7 @@ const getSettingPaperSize = (paperType: string) => {
       paper["pwg:Width"] = PAPPER_PAGE_SIZE[i].Width
       paper["pwg:XOffset"] = PAPPER_PAGE_SIZE[i].XOffset
       paper["pwg:YOffset"] = PAPPER_PAGE_SIZE[i].YOffset
-      paper["_pwg:MustHonor"] = true
+      // paper["_pwg:MustHonor"] = true
       break;
     }
   }
