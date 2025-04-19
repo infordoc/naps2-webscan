@@ -29,8 +29,6 @@ public class Worker : BackgroundService
 
         // Pick the first WIA device to share; you might want to do something else here
         // depending on your use case.
-        //
-        // Note: Driver.Twain currently doesn't work from a Windows Service
         var devices = await controller.GetDeviceList(Driver.Wia);
         var firstDevice = devices.First();
 
