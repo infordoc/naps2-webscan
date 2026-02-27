@@ -40,32 +40,4 @@ public class ConfigController : ControllerBase
             });
         }
     }
-
-    [HttpPost]
-    public ActionResult<ApiResponse<object>> UpdateConfig([FromBody] AppConfig config)
-    {
-        try
-        {
-            _logger.LogInformation("POST /api/config");
-            
-            // Note: In-memory configuration updates won't persist
-            // For persistent updates, you'd need to write to appsettings.json
-            _logger.LogWarning("Configuration updates are not persisted to file");
-            
-            return Ok(new ApiResponse<object>
-            {
-                Success = true,
-                Data = new { Message = "Configuration updated (in-memory only, restart required to reset)" }
-            });
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error updating configuration");
-            return StatusCode(500, new ApiResponse<object>
-            {
-                Success = false,
-                Error = ex.Message
-            });
-        }
-    }
 }

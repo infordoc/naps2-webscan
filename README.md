@@ -66,6 +66,17 @@ Edit `appsettings.json` to customize the service:
 }
 ```
 
+**⚠️ Security Warning**: By default, CORS is configured to allow all origins (`"*"`). This is convenient for development but poses a security risk in production. Unauthorized web applications could scan documents without user consent. For production deployments, restrict `AllowedOrigins` to specific trusted domains:
+
+```json
+{
+  "Cors": {
+    "Enabled": true,
+    "AllowedOrigins": ["https://your-trusted-domain.com", "https://intranet.company.com"]
+  }
+}
+```
+
 ## API Documentation
 
 Base URL: `http://localhost:8080`
@@ -181,9 +192,6 @@ Content-Type: application/json
   "multiPage": false,
   "maxPages": 1,
   "fileName": "scan",
-  "autoRotate": false,
-  "autoDeskew": false,
-  "blankPageDetection": false,
   "jpegQuality": 90
 }
 ```
@@ -199,16 +207,15 @@ All parameters are optional with sensible defaults:
 | colorMode | string | "Color" | "Color", "Grayscale", "BlackAndWhite" |
 | pageSize | string | "A4" | "A4", "Letter", "Legal", "Custom" |
 | scanSource | string | "Flatbed" | "Flatbed", "Feeder" |
-| brightness | int | 0 | -100 to 100 |
-| contrast | int | 0 | -100 to 100 |
+| brightness | int | 0 | -100 to 100 (reserved for future use) |
+| contrast | int | 0 | -100 to 100 (reserved for future use) |
 | format | string | "PDF" | "PDF", "JPEG", "PNG", "TIFF" |
 | multiPage | bool | false | Scan multiple pages (use with Feeder) |
 | maxPages | int | 1 | Maximum pages to scan |
 | fileName | string | "scan" | Base filename for output |
-| autoRotate | bool | false | Auto-rotate based on content |
-| autoDeskew | bool | false | Auto-correct skew |
-| blankPageDetection | bool | false | Detect and skip blank pages |
 | jpegQuality | int | 90 | JPEG quality (1-100) |
+
+**Note**: Scanner capabilities shown in `/api/scanners` are currently indicative. Actual supported values may vary by device.
 
 Response:
 ```json
@@ -220,6 +227,35 @@ Response:
   "mimeType": "application/pdf",
   "pageCount": 1,
   "scanTime": 2500
+}
+```
+
+### 6. Get Configuration
+
+Get current service configuration:
+
+```
+GET /api/config
+```
+
+Response:
+```json
+{
+  "server": {
+    "port": 8080,
+    "hostname": "localhost"
+  },
+  "cors": {
+    "enabled": true,
+    "allowedOrigins": ["*"]
+  },
+  "scanning": {
+    "defaultDpi": 300,
+    "defaultColorMode": "Color",
+    "defaultFormat": "PDF",
+    "tempDirectory": "./temp",
+    "maxFileSize": 52428800
+  }
 }
 ```
 
@@ -375,6 +411,43 @@ sc query NAPS2WebScanServer
 - Ensure CORS is enabled in appsettings.json
 - Verify AllowedOrigins includes your domain or "*"
 - Check browser console for CORS-related errors
+
+## Security Considerations
+
+### CORS Configuration
+
+The default CORS configuration allows **all origins** (`"*"`), which is convenient for development but poses security risks in production:
+
+- Any website could potentially trigger scans through your service
+- Unauthorized applications could access your scanner
+- Documents could be scanned without explicit user consent
+
+**Recommended Production Configuration:**
+
+```json
+{
+  "Cors": {
+    "Enabled": true,
+    "AllowedOrigins": [
+      "https://your-intranet.company.com",
+      "https://trusted-app.company.com"
+    ]
+  }
+}
+```
+
+### Network Exposure
+
+- By default, the service binds to `localhost` only
+- This prevents external network access
+- Only applications running on the same machine can access the service
+- This is the recommended configuration for most use cases
+
+### Scanner Access Control
+
+- The service inherits scanner permissions from the Windows user account running it
+- Ensure only authorized users can run the service
+- Consider using a dedicated service account with appropriate permissions
 
 ## Build from Source
 

@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using NAPS2.Images.ImageSharp;
 using NAPS2.Scan;
 using NAPS2.WebScan.LocalService.Models;
@@ -9,7 +10,7 @@ public class ScannerService
     private readonly ILogger<ScannerService> _logger;
     private readonly ScanningContext _scanningContext;
     private string? _defaultScannerId;
-    private Dictionary<string, ScanDevice> _cachedScanners = new();
+    private readonly ConcurrentDictionary<string, ScanDevice> _cachedScanners = new();
 
     public ScannerService(ILogger<ScannerService> logger)
     {
@@ -36,6 +37,9 @@ public class ScannerService
                 var scannerId = $"{device.Driver}_{device.ID}";
                 _cachedScanners[scannerId] = device;
                 
+                // Note: Capabilities are currently hardcoded as NAPS2.SDK does not provide
+                // a straightforward way to query device capabilities without initiating a scan.
+                // Actual capabilities may vary by device.
                 var scannerInfo = new ScannerInfo
                 {
                     Id = scannerId,

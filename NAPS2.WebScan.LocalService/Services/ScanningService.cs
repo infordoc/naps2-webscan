@@ -74,12 +74,6 @@ public class ScanningService
 
             _logger.LogInformation("Scanned {Count} page(s)", images.Count);
 
-            // Apply post-processing
-            if (request.AutoDeskew)
-            {
-                images = await ApplyPostProcessing(images, request);
-            }
-
             // Generate output file
             var (fileData, mimeType, extension) = await GenerateOutputFile(images, request);
             
@@ -138,35 +132,6 @@ public class ScanningService
         }
 
         return options;
-    }
-
-    private async Task<List<ProcessedImage>> ApplyPostProcessing(
-        List<ProcessedImage> images, 
-        ScanRequest request)
-    {
-        var processedImages = new List<ProcessedImage>();
-
-        foreach (var image in images)
-        {
-            var processedImage = image;
-
-            if (request.AutoDeskew)
-            {
-                _logger.LogDebug("Auto-deskew requested but not yet implemented");
-                // Deskew functionality would be implemented here
-                // using NAPS2.Images.Deskewer if available
-            }
-
-            if (request.BlankPageDetection)
-            {
-                _logger.LogDebug("Blank page detection requested but not yet implemented");
-                // Blank page detection would be implemented here
-            }
-
-            processedImages.Add(processedImage);
-        }
-
-        return processedImages;
     }
 
     private async Task<(byte[] fileData, string mimeType, string extension)> GenerateOutputFile(
