@@ -6,4 +6,8 @@
         <ImplicitUsings>enable</ImplicitUsings>
     </PropertyGroup>
 
+    <ItemGroup>
+        <PackageReference Include="NAPS2.Sdk" Version="1.2.1" />
+    </ItemGroup>
+
 </Project>

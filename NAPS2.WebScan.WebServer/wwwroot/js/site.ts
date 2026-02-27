@@ -27,9 +27,15 @@ document.getElementById('scan-button').addEventListener('click', async e => {
         // Get the job ID
         const jobId = jobUrl.split('/').pop();
 
-        // Wait for the document to be scanned
-        // If you're scanning from a feeder, call NextDocument multiple times for each page until it produces a 404
-        const doc = await scanner.NextDocument(jobId);
+        console.log('Waiting for document...');
+
+        // MÉTODO OTIMIZADO - Mais rápido (polling de 500ms no ScanImageInfo)
+        // Use este para melhor performance
+        const doc = await scanner.GetNextDocumentOptimized(jobId);
+        
+        // MÉTODO PADRÃO - Simples mas mais lento (retry de 2s no 503)
+        // const doc = await scanner.NextDocument(jobId);
+        
         console.log('scanned document', doc);
 
         // Turn the document JPEG into a blob and load it into the <img> element

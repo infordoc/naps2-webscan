@@ -93,6 +93,47 @@ class Scanner {
 			return res
 		})
 	}
+
+	// Verifica o status de um job específico
+	GetJobStatus(jobId: string): Promise<any> {
+		return this.execute(`ScanJobs/${jobId}`).then(res => {
+			return res
+		})
+	}
+
+	// Aguarda até que o documento esteja pronto de forma otimizada
+	async WaitForDocumentReady(jobId: string, maxAttempts: number = 30, delayMs: number = 500): Promise<boolean> {
+		for (let i = 0; i < maxAttempts; i++) {
+			try {
+				const imageInfo = await this.ScanImageInfo(jobId);
+				// Se conseguiu obter info da imagem, está pronto
+				if (imageInfo) {
+					return true;
+				}
+			} catch (err: any) {
+				// 404 = ainda não pronto, 409 = scanning em progresso
+				if (err.response?.status === 404 || err.response?.status === 409) {
+					await new Promise(resolve => setTimeout(resolve, delayMs));
+					continue;
+				}
+				throw err;
+			}
+		}
+		return false;
+	}
+
+	// Método otimizado para obter documento com polling inteligente
+	async GetNextDocumentOptimized(jobId: string): Promise<any> {
+		// Aguarda o documento ficar pronto
+		const ready = await this.WaitForDocumentReady(jobId);
+		
+		if (!ready) {
+			throw new Error('Timeout aguardando documento');
+		}
+
+		// Agora pega o documento
+		return this.NextDocument(jobId);
+	}
 }
 
 
