@@ -21,4 +21,32 @@
         <PackageReference Include="NAPS2.Sdk" Version="1.2.1" />
         <PackageReference Include="NAPS2.Sdk.Worker.Win32" Version="1.2.1" />
     </ItemGroup>
+
+    <!-- Copiar instaladores para pasta de output -->
+    <ItemGroup>
+        <None Include="instalador.bat">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Include="instalador.ps1">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Include="README.md">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Include="README_INSTALACAO.txt">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Include="LEIA-ME.txt">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Include="API_DOCUMENTATION.md">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Include="INSTALACAO_SERVICO.md">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Include="BUILD.md">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+    </ItemGroup>
 </Project>
